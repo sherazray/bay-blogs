@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import BlogCard from "./BlogCard";
 import { Search, Filter, X } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -38,7 +38,7 @@ export default function BlogFeed() {
     totalPages: 0,
   });
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -59,11 +59,11 @@ export default function BlogFeed() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search, category]);
 
   useEffect(() => {
     fetchPosts();
-  }, [page, search, category]);
+  }, [fetchPosts]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

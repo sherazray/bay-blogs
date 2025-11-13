@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { format } from "date-fns";
 import { Send, Reply, Trash2 } from "lucide-react";
@@ -32,7 +32,7 @@ export default function CommentSection({ postId, authorId }: CommentSectionProps
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState("");
 
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       const response = await fetch(`/api/posts/${postId}`);
       const data = await response.json();
@@ -44,11 +44,11 @@ export default function CommentSection({ postId, authorId }: CommentSectionProps
     } finally {
       setLoading(false);
     }
-  };
+  }, [postId]);
 
   useEffect(() => {
     fetchComments();
-  }, [postId]);
+  }, [fetchComments]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

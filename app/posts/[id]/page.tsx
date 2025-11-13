@@ -98,12 +98,29 @@ export default async function PostPage({ params }: { params: { id: string } }) {
     notFound();
   }
 
+  // Serialize dates to strings for client component
+  const serializedPost = {
+    ...post,
+    createdAt: post.createdAt.toISOString(),
+    updatedAt: post.updatedAt.toISOString(),
+    comments: post.comments.map((comment) => ({
+      ...comment,
+      createdAt: comment.createdAt.toISOString(),
+      updatedAt: comment.updatedAt.toISOString(),
+      replies: comment.replies.map((reply) => ({
+        ...reply,
+        createdAt: reply.createdAt.toISOString(),
+        updatedAt: reply.updatedAt.toISOString(),
+      })),
+    })),
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-8 max-w-4xl">
         <Suspense fallback={<PostDetailSkeleton />}>
-          <PostDetail post={post} />
+          <PostDetail post={serializedPost} />
         </Suspense>
       </main>
       <Footer />

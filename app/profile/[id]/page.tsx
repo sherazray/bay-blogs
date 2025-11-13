@@ -77,12 +77,22 @@ export default async function ProfilePage({
     notFound();
   }
 
+  // Serialize dates to strings for client component
+  const serializedUser = {
+    ...user,
+    createdAt: user.createdAt.toISOString(),
+    posts: user.posts.map((post) => ({
+      ...post,
+      createdAt: post.createdAt.toISOString(),
+    })),
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-8">
         <Suspense fallback={<UserProfileSkeleton />}>
-          <UserProfile user={user} />
+          <UserProfile user={serializedUser} />
         </Suspense>
       </main>
       <Footer />
